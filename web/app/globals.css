@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+/* -----------------------------------------------------------
+   Payphlo theme — dark "Revolut-like" base + vibrant green accent
+   ----------------------------------------------------------- */
+
+:root {
+  /* surfaces */
+  --background: #07090b;
+  --surface: #0e1216;
+  --surface-2: #161b21;
+  --surface-3: #1f262e;
+  --border: #1f262e;
+  --border-soft: #161b21;
+
+  /* text */
+  --foreground: #f5f7fa;
+  --muted: #9aa4b2;
+  --muted-2: #6b7280;
+
+  /* brand — vivid green */
+  --brand: #00d97e;
+  --brand-strong: #00b86a;
+  --brand-soft: rgba(0, 217, 126, 0.12);
+  --brand-glow: 0 0 0 1px rgba(0, 217, 126, 0.35),
+                0 8px 32px -8px rgba(0, 217, 126, 0.45);
+
+  /* status */
+  --positive: #22c55e;
+  --negative: #ef4444;
+  --warn: #f59e0b;
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 22px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-muted: var(--muted);
+  --color-muted-2: var(--muted-2);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-warn: var(--warn);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+body {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bg-aurora {
+  background:
+    radial-gradient(60% 50% at 15% 10%, rgba(0, 217, 126, 0.18), transparent 60%),
+    radial-gradient(50% 40% at 90% 0%, rgba(0, 217, 126, 0.12), transparent 60%),
+    radial-gradient(40% 30% at 50% 100%, rgba(0, 217, 126, 0.10), transparent 60%),
+    var(--background);
+}
+
+.bg-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.card-2 {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.btn-brand {
+  background: var(--brand);
+  color: #04130a;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  transition: transform 0.05s ease, box-shadow 0.2s ease, background 0.2s ease;
+  box-shadow: var(--brand-glow);
+}
+.btn-brand:hover { background: var(--brand-strong); }
+.btn-brand:active { transform: translateY(1px); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.btn-ghost:hover {
+  background: var(--surface-2);
+  border-color: var(--surface-3);
+}
+
+.input {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.65rem 0.85rem;
+  color: var(--foreground);
+  width: 100%;
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input::placeholder { color: var(--muted-2); }
+.input:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-soft);
+}
+
+.label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+.pill-brand   { background: var(--brand-soft); color: var(--brand); }
+.pill-low     { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+.pill-medium  { background: rgba(245, 158, 11, 0.12); color: #fbbf24; }
+.pill-high    { background: rgba(239, 68, 68, 0.14); color: #f87171; }
+
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 999px; }
+*::-webkit-scrollbar-thumb:hover { background: #2a323b; }
+
+/* -----------------------------------------------------------
+   Animations — business-formal, no bounce
+   Easing standard: cubic-bezier(0.2, 0.8, 0.2, 1)
+   ----------------------------------------------------------- */
+
+/* Parallax page transition.
+   Two layers move at different speeds = depth illusion.
+   Apply via key={pathname} on the wrapping element. */
+@keyframes pp-page-deep {
+  from { opacity: 0; transform: translate3d(0, 40px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0,    0); }
+}
+@keyframes pp-page-front {
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0,    0); }
+}
+
+.page-deep {
+  animation: pp-page-deep 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  will-change: opacity, transform;
+}
+.page-front {
+  animation: pp-page-front 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: 60ms;
+  will-change: opacity, transform;
+}
+
+/* Sparkline draw-in: stroke-dashoffset trick. */
+@keyframes pp-spark-draw {
+  to { stroke-dashoffset: 0; }
+}
+.spark-draw {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: pp-spark-draw 700ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes pp-spark-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.spark-area {
+  opacity: 0;
+  animation: pp-spark-fade 500ms ease-out 350ms forwards;
+}
+
+/* Sidebar sliding pill — driven by inline transform. */
+.nav-pill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--nav-pill-h, 0px);
+  transform: translateY(var(--nav-pill-y, 0px));
+  background: var(--brand-soft);
+  border-radius: 12px;
+  transition:
+    transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 200ms ease-out;
+  pointer-events: none;
+  will-change: transform, height;
+}
+
+/* Respect reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .page-deep,
+  .page-front,
+  .spark-draw,
+  .spark-area,
+  .nav-pill {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}

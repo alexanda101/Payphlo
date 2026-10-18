@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String         @id @default(uuid())
+  name          String?
+  email         String         @unique
+  password      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  conversations Conversation[]
+  transferQuotes TransferQuote[]
+  transfers     Transfer[]
+  watchlist     WatchlistItem[]
+  orders        PaperOrder[]
+  positions     Position[]
+  cashBalance   Float          @default(10000) // virtual starting balance
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  userId    String
+  title     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@index([userId])
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  role           String       // "user" | "assistant" | "system"
+  content        String
+  blocked        Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+model TransferQuote {
+  id              String   @id @default(uuid())
+  userId          String
+  fromCurrency    String
+  toCurrency      String
+  sendAmount      Float
+  midMarketRate   Float
+  ourRate         Float
+  markupPct       Float
+  feeAmount       Float
+  totalCost       Float
+  receiveAmount   Float
+  speedTier       String   // "economy" | "standard" | "express"
+  deliveryEtaMin  Int      // minutes
+  deliveryEtaMax  Int      // minutes
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transfer        Transfer?
+
+  @@index([userId])
+}
+
+model Transfer {
+  id            String        @id @default(uuid())
+  userId        String
+  quoteId       String        @unique
+  status        String        @default("pending") // pending | sent | delivered | cancelled
+  recipientName String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quote         TransferQuote @relation(fields: [quoteId], references: [id])
+
+  @@index([userId])
+}
+
+model Asset {
+  id          String   @id @default(uuid())
+  symbol      String   @unique
+  name        String
+  assetClass  String   // "stock" | "etf" | "crypto"
+  sector      String?
+  basePrice   Float
+  riskLevel   String   // "low" | "medium" | "high"
+  description String?
+  createdAt   DateTime @default(now())
+  watchedBy   WatchlistItem[]
+  orders      PaperOrder[]
+  positions   Position[]
+}
+
+model WatchlistItem {
+  id        String   @id @default(uuid())
+  userId    String
+  assetId   String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, assetId])
+  @@index([userId])
+}
+
+model PaperOrder {
+  id        String   @id @default(uuid())
+  userId    String
+  assetId   String
+  side      String   // "buy" | "sell"
+  quantity  Float
+  price     Float    // execution price (mock fill at quote time)
+  total     Float    // quantity * price
+  status    String   @default("filled") // filled | rejected
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset     Asset    @relation(fields: [assetId], references: [id])
+
+  @@index([userId])
+}
+
+model Position {
+  id           String   @id @default(uuid())
+  userId       String
+  assetId      String
+  quantity     Float
+  avgCost      Float    // dollar-weighted average price paid
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  asset        Asset    @relation(fields: [assetId], references: [id])
+
+  @@unique([userId, assetId])
+  @@index([userId])
+}
