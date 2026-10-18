@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: payphlo-api
+    runtime: node
+    plan: free
+    region: ohio
+    rootDir: api
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm run prisma:generate && pnpm run build && pnpm run prisma:migrate:deploy
+    startCommand: pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: payphlo-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://payphlo.com,https://www.payphlo.com
+      - key: LLM_PROVIDER
+        value: none
+
+databases:
+  - name: payphlo-db
+    plan: free
+    region: ohio
+    databaseName: payphlo
+    user: payphlo
