@@ -67,7 +67,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </main>
 
         {/* Mobile bottom nav */}
-        <nav className="md:hidden sticky bottom-0 grid grid-cols-4 border-t border-[var(--border)] bg-[var(--surface)]">
+        <nav className="mobile-safe-bottom md:hidden sticky bottom-0 grid grid-cols-4 border-t border-[var(--border)] bg-[var(--surface)]">
           {NAV.map((item) => {
             const active = isActive(pathname, item.href);
             return (

@@ -65,6 +65,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.mobile-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 .bg-aurora {
   background:
     radial-gradient(60% 50% at 15% 10%, rgba(0, 217, 126, 0.18), transparent 60%),
